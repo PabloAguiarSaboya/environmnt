@@ -1,0 +1,1662 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/ReservasIndgenas_AvaCorteAPAPA_0.js"></script>
+        <script src="data/Quilombolas_CorteAPAPA_1.js"></script>
+        <script src="data/PNCV_ampliado_SIRGAS2000_2.js"></script>
+        <script src="data/PTO_Pto_Ref_Geod_Topo_P_3.js"></script>
+        <script src="data/BC100_HID_DREN_L_APAPA_corteEDIT_4.js"></script>
+        <script src="data/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5.js"></script>
+        <script src="data/REL_Elemento_Fisiografico_Natural_L_6.js"></script>
+        <script src="data/BC100_TRA_L_APAPA_corteEDIT_7.js"></script>
+        <script src="data/AltoParaso_8.js"></script>
+        <script src="data/MergusTurist_9.js"></script>
+        <script src="data/IBGE_SJGO_10.js"></script>
+        <script src="data/IBGE_ColinasGO_11.js"></script>
+        <script src="data/IBGE_TerezinaGO_12.js"></script>
+        <script src="data/IBGE_CavalcGO_13.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var crs = new L.Proj.CRS('EPSG:31983', '+proj=utm +zone=23 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', {
+            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+        });
+        var map = L.map('map', {
+            crs: crs,
+            continuousWorld: false,
+            worldCopyJump: false, 
+            zoomControl:true, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+            map.setMaxBounds(map.getBounds());
+        }
+        function pop_ReservasIndgenas_AvaCorteAPAPA_0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GID0'] !== null ? Autolinker.link(String(feature.properties['GID0'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SIGLA1'] !== null ? Autolinker.link(String(feature.properties['SIGLA1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBS2'] !== null ? Autolinker.link(String(feature.properties['OBS2'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REV3'] !== null ? Autolinker.link(String(feature.properties['REV3'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EM_REVIS4'] !== null ? Autolinker.link(String(feature.properties['EM_REVIS4'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODAREAR5'] !== null ? Autolinker.link(String(feature.properties['CODAREAR5'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADR_ANTI6'] !== null ? Autolinker.link(String(feature.properties['ADR_ANTI6'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['POPULACA7'] !== null ? Autolinker.link(String(feature.properties['POPULACA7'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GRUPOS8'] !== null ? Autolinker.link(String(feature.properties['GRUPOS8'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['UF9'] !== null ? Autolinker.link(String(feature.properties['UF9'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MUNICIPI10'] !== null ? Autolinker.link(String(feature.properties['MUNICIPI10'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ETAPA11'] !== null ? Autolinker.link(String(feature.properties['ETAPA11'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SITUACAO12'] !== null ? Autolinker.link(String(feature.properties['SITUACAO12'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TITULO13'] !== null ? Autolinker.link(String(feature.properties['TITULO13'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DOCUMENT14'] !== null ? Autolinker.link(String(feature.properties['DOCUMENT14'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERIMETR15'] !== null ? Autolinker.link(String(feature.properties['PERIMETR15'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA_HA16'] !== null ? Autolinker.link(String(feature.properties['AREA_HA16'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DATADOC17'] !== null ? Autolinker.link(String(feature.properties['DATADOC17'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EXTENSO18'] !== null ? Autolinker.link(String(feature.properties['EXTENSO18'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPO19'] !== null ? Autolinker.link(String(feature.properties['TIPO19'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CDOC20'] !== null ? Autolinker.link(String(feature.properties['CDOC20'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODTI21'] !== null ? Autolinker.link(String(feature.properties['CODTI21'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME_ARE22'] !== null ? Autolinker.link(String(feature.properties['NOME_ARE22'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME_TI23'] !== null ? Autolinker.link(String(feature.properties['NOME_TI23'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODAREA24'] !== null ? Autolinker.link(String(feature.properties['CODAREA24'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COOR_REG25'] !== null ? Autolinker.link(String(feature.properties['COOR_REG25'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID126'] !== null ? Autolinker.link(String(feature.properties['ID126'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_ReservasIndgenas_AvaCorteAPAPA_0_0() {
+            return {
+                pane: 'pane_ReservasIndgenas_AvaCorteAPAPA_0',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,182,54,1.0)',
+            }
+        }
+        map.createPane('pane_ReservasIndgenas_AvaCorteAPAPA_0');
+        map.getPane('pane_ReservasIndgenas_AvaCorteAPAPA_0').style.zIndex = 400;
+        map.getPane('pane_ReservasIndgenas_AvaCorteAPAPA_0').style['mix-blend-mode'] = 'normal';
+        var layer_ReservasIndgenas_AvaCorteAPAPA_0 = new L.geoJson(json_ReservasIndgenas_AvaCorteAPAPA_0, {
+            attribution: '',
+            pane: 'pane_ReservasIndgenas_AvaCorteAPAPA_0',
+            onEachFeature: pop_ReservasIndgenas_AvaCorteAPAPA_0,
+            style: style_ReservasIndgenas_AvaCorteAPAPA_0_0,
+        });
+        bounds_group.addLayer(layer_ReservasIndgenas_AvaCorteAPAPA_0);
+        map.addLayer(layer_ReservasIndgenas_AvaCorteAPAPA_0);
+        function pop_Quilombolas_CorteAPAPA_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GID0'] !== null ? Autolinker.link(String(feature.properties['GID0'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SR1'] !== null ? Autolinker.link(String(feature.properties['CD_SR1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NR_PROCE2'] !== null ? Autolinker.link(String(feature.properties['NR_PROCE2'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_COMUN3'] !== null ? Autolinker.link(String(feature.properties['NM_COMUN3'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_MUNIC4'] !== null ? Autolinker.link(String(feature.properties['NM_MUNIC4'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_UF5'] !== null ? Autolinker.link(String(feature.properties['CD_UF5'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DT_PUBLI6'] !== null ? Autolinker.link(String(feature.properties['DT_PUBLI6'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DT_PUBLI7'] !== null ? Autolinker.link(String(feature.properties['DT_PUBLI7'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NR_FAMIL8'] !== null ? Autolinker.link(String(feature.properties['NR_FAMIL8'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DT_TITUL9'] !== null ? Autolinker.link(String(feature.properties['DT_TITUL9'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AREA_CAL10'] !== null ? Autolinker.link(String(feature.properties['AREA_CAL10'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERIMETR11'] !== null ? Autolinker.link(String(feature.properties['PERIMETR11'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Quilombolas_CorteAPAPA_1_0() {
+            return {
+                pane: 'pane_Quilombolas_CorteAPAPA_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(106,242,60,1.0)',
+            }
+        }
+        map.createPane('pane_Quilombolas_CorteAPAPA_1');
+        map.getPane('pane_Quilombolas_CorteAPAPA_1').style.zIndex = 401;
+        map.getPane('pane_Quilombolas_CorteAPAPA_1').style['mix-blend-mode'] = 'normal';
+        var layer_Quilombolas_CorteAPAPA_1 = new L.geoJson(json_Quilombolas_CorteAPAPA_1, {
+            attribution: '',
+            pane: 'pane_Quilombolas_CorteAPAPA_1',
+            onEachFeature: pop_Quilombolas_CorteAPAPA_1,
+            style: style_Quilombolas_CorteAPAPA_1_0,
+        });
+        bounds_group.addLayer(layer_Quilombolas_CorteAPAPA_1);
+        map.addLayer(layer_Quilombolas_CorteAPAPA_1);
+        function pop_PNCV_ampliado_SIRGAS2000_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_Propos'] !== null ? Autolinker.link(String(feature.properties['FID_Propos'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OID_'] !== null ? Autolinker.link(String(feature.properties['OID_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FolderPath'] !== null ? Autolinker.link(String(feature.properties['FolderPath'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SymbolID'] !== null ? Autolinker.link(String(feature.properties['SymbolID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['AltMode'] !== null ? Autolinker.link(String(feature.properties['AltMode'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Base'] !== null ? Autolinker.link(String(feature.properties['Base'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Clamped'] !== null ? Autolinker.link(String(feature.properties['Clamped'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Extruded'] !== null ? Autolinker.link(String(feature.properties['Extruded'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Snippet'] !== null ? Autolinker.link(String(feature.properties['Snippet'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PopupInfo'] !== null ? Autolinker.link(String(feature.properties['PopupInfo'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Leng'] !== null ? Autolinker.link(String(feature.properties['Shape_Leng'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Shape_Area'] !== null ? Autolinker.link(String(feature.properties['Shape_Area'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Perimeter'] !== null ? Autolinker.link(String(feature.properties['Perimeter'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Hectares'] !== null ? Autolinker.link(String(feature.properties['Hectares'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Area'] !== null ? Autolinker.link(String(feature.properties['Area'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Acres'] !== null ? Autolinker.link(String(feature.properties['Acres'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_PCH_Ar'] !== null ? Autolinker.link(String(feature.properties['FID_PCH_Ar'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FID_'] !== null ? Autolinker.link(String(feature.properties['FID_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Entity'] !== null ? Autolinker.link(String(feature.properties['Entity'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Layer'] !== null ? Autolinker.link(String(feature.properties['Layer'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Color'] !== null ? Autolinker.link(String(feature.properties['Color'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Linetype'] !== null ? Autolinker.link(String(feature.properties['Linetype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Elevation'] !== null ? Autolinker.link(String(feature.properties['Elevation'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LineWt'] !== null ? Autolinker.link(String(feature.properties['LineWt'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RefName'] !== null ? Autolinker.link(String(feature.properties['RefName'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Nome'] !== null ? Autolinker.link(String(feature.properties['Nome'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Descricao'] !== null ? Autolinker.link(String(feature.properties['Descricao'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CotaZ'] !== null ? Autolinker.link(String(feature.properties['CotaZ'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CoordX'] !== null ? Autolinker.link(String(feature.properties['CoordX'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CoordY'] !== null ? Autolinker.link(String(feature.properties['CoordY'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LATITUDE_O'] !== null ? Autolinker.link(String(feature.properties['LATITUDE_O'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LONGITUDE_'] !== null ? Autolinker.link(String(feature.properties['LONGITUDE_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PONTO_OR'] !== null ? Autolinker.link(String(feature.properties['PONTO_OR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ELIPSOIDE_'] !== null ? Autolinker.link(String(feature.properties['ELIPSOIDE_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CM'] !== null ? Autolinker.link(String(feature.properties['CM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DM'] !== null ? Autolinker.link(String(feature.properties['DM'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VA'] !== null ? Autolinker.link(String(feature.properties['VA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DATA_OR'] !== null ? Autolinker.link(String(feature.properties['DATA_OR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['BUFF_DIST'] !== null ? Autolinker.link(String(feature.properties['BUFF_DIST'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORIG_FID'] !== null ? Autolinker.link(String(feature.properties['ORIG_FID'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PNCV_ampliado_SIRGAS2000_2_0() {
+            return {
+                pane: 'pane_PNCV_ampliado_SIRGAS2000_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,255,0,1.0)',
+            }
+        }
+        map.createPane('pane_PNCV_ampliado_SIRGAS2000_2');
+        map.getPane('pane_PNCV_ampliado_SIRGAS2000_2').style.zIndex = 402;
+        map.getPane('pane_PNCV_ampliado_SIRGAS2000_2').style['mix-blend-mode'] = 'normal';
+        var layer_PNCV_ampliado_SIRGAS2000_2 = new L.geoJson(json_PNCV_ampliado_SIRGAS2000_2, {
+            attribution: '',
+            pane: 'pane_PNCV_ampliado_SIRGAS2000_2',
+            onEachFeature: pop_PNCV_ampliado_SIRGAS2000_2,
+            style: style_PNCV_ampliado_SIRGAS2000_2_0,
+        });
+        bounds_group.addLayer(layer_PNCV_ampliado_SIRGAS2000_2);
+        map.addLayer(layer_PNCV_ampliado_SIRGAS2000_2);
+        function pop_PTO_Pto_Ref_Geod_Topo_P_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME'] !== null ? Autolinker.link(String(feature.properties['NOME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOMETRIAA'] !== null ? Autolinker.link(String(feature.properties['GEOMETRIAA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PROXIMIDAD'] !== null ? Autolinker.link(String(feature.properties['PROXIMIDAD'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPOREF'] !== null ? Autolinker.link(String(feature.properties['TIPOREF'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPOPTOREF'] !== null ? Autolinker.link(String(feature.properties['TIPOPTOREF'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REDE'] !== null ? Autolinker.link(String(feature.properties['REDE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LATITUDE'] !== null ? Autolinker.link(String(feature.properties['LATITUDE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LONGITUDE'] !== null ? Autolinker.link(String(feature.properties['LONGITUDE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ALTITUDEOR'] !== null ? Autolinker.link(String(feature.properties['ALTITUDEOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SISTEMAGEO'] !== null ? Autolinker.link(String(feature.properties['SISTEMAGEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OUTRAREFPL'] !== null ? Autolinker.link(String(feature.properties['OUTRAREFPL'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REFERENCIA'] !== null ? Autolinker.link(String(feature.properties['REFERENCIA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OUTRAREFAL'] !== null ? Autolinker.link(String(feature.properties['OUTRAREFAL'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REFERENCI0'] !== null ? Autolinker.link(String(feature.properties['REFERENCI0'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SITUACAOMA'] !== null ? Autolinker.link(String(feature.properties['SITUACAOMA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DATAVISITA'] !== null ? Autolinker.link(String(feature.properties['DATAVISITA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ORGAOENTER'] !== null ? Autolinker.link(String(feature.properties['ORGAOENTER'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODPONTO'] !== null ? Autolinker.link(String(feature.properties['CODPONTO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OBS'] !== null ? Autolinker.link(String(feature.properties['OBS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMEABREV'] !== null ? Autolinker.link(String(feature.properties['NOMEABREV'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_PTO_Pto_Ref_Geod_Topo_P_3_0() {
+            return {
+                pane: 'pane_PTO_Pto_Ref_Geod_Topo_P_3',
+                shape: 'triangle',
+                radius: 3.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(93,92,92,1.0)',
+            }
+        }
+        map.createPane('pane_PTO_Pto_Ref_Geod_Topo_P_3');
+        map.getPane('pane_PTO_Pto_Ref_Geod_Topo_P_3').style.zIndex = 403;
+        map.getPane('pane_PTO_Pto_Ref_Geod_Topo_P_3').style['mix-blend-mode'] = 'normal';
+        var layer_PTO_Pto_Ref_Geod_Topo_P_3 = new L.geoJson(json_PTO_Pto_Ref_Geod_Topo_P_3, {
+            attribution: '',
+            pane: 'pane_PTO_Pto_Ref_Geod_Topo_P_3',
+            onEachFeature: pop_PTO_Pto_Ref_Geod_Topo_P_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_PTO_Pto_Ref_Geod_Topo_P_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PTO_Pto_Ref_Geod_Topo_P_3);
+        map.addLayer(layer_PTO_Pto_Ref_Geod_Topo_P_3);
+        function pop_BC100_HID_DREN_L_APAPA_corteEDIT_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ANTIGO'] !== null ? Autolinker.link(String(feature.properties['ID_ANTIGO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME'] !== null ? Autolinker.link(String(feature.properties['NOME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMEABREV'] !== null ? Autolinker.link(String(feature.properties['NOMEABREV'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOMETRIAA'] !== null ? Autolinker.link(String(feature.properties['GEOMETRIAA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DENTRODEPO'] !== null ? Autolinker.link(String(feature.properties['DENTRODEPO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COMPARTILH'] !== null ? Autolinker.link(String(feature.properties['COMPARTILH'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EIXOPRINCI'] !== null ? Autolinker.link(String(feature.properties['EIXOPRINCI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CALADOMAX'] !== null ? Autolinker.link(String(feature.properties['CALADOMAX'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LARGURAMED'] !== null ? Autolinker.link(String(feature.properties['LARGURAMED'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VELOCIDADE'] !== null ? Autolinker.link(String(feature.properties['VELOCIDADE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PROFUNDIDA'] !== null ? Autolinker.link(String(feature.properties['PROFUNDIDA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COINCIDECO'] !== null ? Autolinker.link(String(feature.properties['COINCIDECO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAVEGABILI'] !== null ? Autolinker.link(String(feature.properties['NAVEGABILI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REGIME'] !== null ? Autolinker.link(String(feature.properties['REGIME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TX_COMENTA'] !== null ? Autolinker.link(String(feature.properties['TX_COMENTA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_PRODUTO'] !== null ? Autolinker.link(String(feature.properties['ID_PRODUTO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ELEMENT'] !== null ? Autolinker.link(String(feature.properties['ID_ELEMENT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['auxiliary_'] !== null ? Autolinker.link(String(feature.properties['auxiliary_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['auxiliar_1'] !== null ? Autolinker.link(String(feature.properties['auxiliar_1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['lenght'] !== null ? Autolinker.link(String(feature.properties['lenght'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_BC100_HID_DREN_L_APAPA_corteEDIT_4_0() {
+            return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDIT_4',
+                opacity: 1,
+                color: 'rgba(27,42,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_BC100_HID_DREN_L_APAPA_corteEDIT_4');
+        map.getPane('pane_BC100_HID_DREN_L_APAPA_corteEDIT_4').style.zIndex = 404;
+        map.getPane('pane_BC100_HID_DREN_L_APAPA_corteEDIT_4').style['mix-blend-mode'] = 'normal';
+        var layer_BC100_HID_DREN_L_APAPA_corteEDIT_4 = new L.geoJson(json_BC100_HID_DREN_L_APAPA_corteEDIT_4, {
+            attribution: '',
+            pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDIT_4',
+            onEachFeature: pop_BC100_HID_DREN_L_APAPA_corteEDIT_4,
+            style: style_BC100_HID_DREN_L_APAPA_corteEDIT_4_0,
+        });
+        bounds_group.addLayer(layer_BC100_HID_DREN_L_APAPA_corteEDIT_4);
+        map.addLayer(layer_BC100_HID_DREN_L_APAPA_corteEDIT_4);
+        function pop_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ANTIGO'] !== null ? Autolinker.link(String(feature.properties['ID_ANTIGO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME'] !== null ? Autolinker.link(String(feature.properties['NOME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMEABREV'] !== null ? Autolinker.link(String(feature.properties['NOMEABREV'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOMETRIAA'] !== null ? Autolinker.link(String(feature.properties['GEOMETRIAA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DENTRODEPO'] !== null ? Autolinker.link(String(feature.properties['DENTRODEPO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COMPARTILH'] !== null ? Autolinker.link(String(feature.properties['COMPARTILH'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['EIXOPRINCI'] !== null ? Autolinker.link(String(feature.properties['EIXOPRINCI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CALADOMAX'] !== null ? Autolinker.link(String(feature.properties['CALADOMAX'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LARGURAMED'] !== null ? Autolinker.link(String(feature.properties['LARGURAMED'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VELOCIDADE'] !== null ? Autolinker.link(String(feature.properties['VELOCIDADE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PROFUNDIDA'] !== null ? Autolinker.link(String(feature.properties['PROFUNDIDA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COINCIDECO'] !== null ? Autolinker.link(String(feature.properties['COINCIDECO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAVEGABILI'] !== null ? Autolinker.link(String(feature.properties['NAVEGABILI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REGIME'] !== null ? Autolinker.link(String(feature.properties['REGIME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TX_COMENTA'] !== null ? Autolinker.link(String(feature.properties['TX_COMENTA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_PRODUTO'] !== null ? Autolinker.link(String(feature.properties['ID_PRODUTO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ELEMENT'] !== null ? Autolinker.link(String(feature.properties['ID_ELEMENT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['auxiliary_'] !== null ? Autolinker.link(String(feature.properties['auxiliary_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['auxiliar_1'] !== null ? Autolinker.link(String(feature.properties['auxiliar_1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Xrot'] !== null ? Autolinker.link(String(feature.properties['Xrot'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Yrot'] !== null ? Autolinker.link(String(feature.properties['Yrot'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['comp'] !== null ? Autolinker.link(String(feature.properties['comp'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_0(feature) {
+            switch(String(feature.properties['NOME'])) {
+                case 'Córrego Almécegas':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Ribeirão Cachoeirinha':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Ribeirão das Brancas':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Ribeirão Montes Claros':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Ribeirão Piçarrão':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Ribeirão São Miguel':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio Claro':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio de Pedra':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio dos Couros':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio Preto':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio São Félix':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Rio Tocantinzinho':
+                    return {
+                pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+                opacity: 1,
+                color: 'rgba(32,50,250,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 3.0,
+                fillOpacity: 0,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5');
+        map.getPane('pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5').style.zIndex = 405;
+        map.getPane('pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5').style['mix-blend-mode'] = 'normal';
+        var layer_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5 = new L.geoJson(json_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5, {
+            attribution: '',
+            pane: 'pane_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5',
+            onEachFeature: pop_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5,
+            style: style_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_0,
+        });
+        bounds_group.addLayer(layer_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5);
+        map.addLayer(layer_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5);
+        function pop_REL_Elemento_Fisiografico_Natural_L_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOME'] !== null ? Autolinker.link(String(feature.properties['NOME'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOMETRIAA'] !== null ? Autolinker.link(String(feature.properties['GEOMETRIAA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPOELEMNA'] !== null ? Autolinker.link(String(feature.properties['TIPOELEMNA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOMEABREV'] !== null ? Autolinker.link(String(feature.properties['NOMEABREV'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_REL_Elemento_Fisiografico_Natural_L_6_0() {
+            return {
+                pane: 'pane_REL_Elemento_Fisiografico_Natural_L_6',
+                stroke: false,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_REL_Elemento_Fisiografico_Natural_L_6');
+        map.getPane('pane_REL_Elemento_Fisiografico_Natural_L_6').style.zIndex = 406;
+        map.getPane('pane_REL_Elemento_Fisiografico_Natural_L_6').style['mix-blend-mode'] = 'normal';
+        var layer_REL_Elemento_Fisiografico_Natural_L_6 = new L.geoJson(json_REL_Elemento_Fisiografico_Natural_L_6, {
+            attribution: '',
+            pane: 'pane_REL_Elemento_Fisiografico_Natural_L_6',
+            onEachFeature: pop_REL_Elemento_Fisiografico_Natural_L_6,
+            style: style_REL_Elemento_Fisiografico_Natural_L_6_0,
+        });
+        bounds_group.addLayer(layer_REL_Elemento_Fisiografico_Natural_L_6);
+        map.addLayer(layer_REL_Elemento_Fisiografico_Natural_L_6);
+        function pop_BC100_TRA_L_APAPA_corteEDIT_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ANTIGO'] !== null ? Autolinker.link(String(feature.properties['ID_ANTIGO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GEOMETRIAA'] !== null ? Autolinker.link(String(feature.properties['GEOMETRIAA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODTRECHOR'] !== null ? Autolinker.link(String(feature.properties['CODTRECHOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIPOTRECHO'] !== null ? Autolinker.link(String(feature.properties['TIPOTRECHO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['JURISDICAO'] !== null ? Autolinker.link(String(feature.properties['JURISDICAO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADMINISTRA'] !== null ? Autolinker.link(String(feature.properties['ADMINISTRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CONCESSION'] !== null ? Autolinker.link(String(feature.properties['CONCESSION'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['REVESTIMEN'] !== null ? Autolinker.link(String(feature.properties['REVESTIMEN'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['OPERACIONA'] !== null ? Autolinker.link(String(feature.properties['OPERACIONA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['SITUACAOFI'] !== null ? Autolinker.link(String(feature.properties['SITUACAOFI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NRPISTAS'] !== null ? Autolinker.link(String(feature.properties['NRPISTAS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NRFAIXAS'] !== null ? Autolinker.link(String(feature.properties['NRFAIXAS'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TRAFEGO'] !== null ? Autolinker.link(String(feature.properties['TRAFEGO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CANTEIRODI'] !== null ? Autolinker.link(String(feature.properties['CANTEIRODI'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CAPACCARGA'] !== null ? Autolinker.link(String(feature.properties['CAPACCARGA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_PRODUTO'] !== null ? Autolinker.link(String(feature.properties['ID_PRODUTO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID_ELEMENT'] !== null ? Autolinker.link(String(feature.properties['ID_ELEMENT'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TX_COMENTA'] !== null ? Autolinker.link(String(feature.properties['TX_COMENTA'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_BC100_TRA_L_APAPA_corteEDIT_7_0(feature) {
+            switch(String(feature.properties['REVESTIMEN'])) {
+                case 'Leito natural':
+                    return {
+                pane: 'pane_BC100_TRA_L_APAPA_corteEDIT_7',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '10,5',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+                    break;
+                case 'Pavimentado':
+                    return {
+                pane: 'pane_BC100_TRA_L_APAPA_corteEDIT_7',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'round',
+                lineJoin: 'round',
+                weight: 2.0,
+                fillOpacity: 0,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_BC100_TRA_L_APAPA_corteEDIT_7');
+        map.getPane('pane_BC100_TRA_L_APAPA_corteEDIT_7').style.zIndex = 407;
+        map.getPane('pane_BC100_TRA_L_APAPA_corteEDIT_7').style['mix-blend-mode'] = 'normal';
+        var layer_BC100_TRA_L_APAPA_corteEDIT_7 = new L.geoJson(json_BC100_TRA_L_APAPA_corteEDIT_7, {
+            attribution: '',
+            pane: 'pane_BC100_TRA_L_APAPA_corteEDIT_7',
+            onEachFeature: pop_BC100_TRA_L_APAPA_corteEDIT_7,
+            style: style_BC100_TRA_L_APAPA_corteEDIT_7_0,
+        });
+        bounds_group.addLayer(layer_BC100_TRA_L_APAPA_corteEDIT_7);
+        map.addLayer(layer_BC100_TRA_L_APAPA_corteEDIT_7);
+        function pop_AltoParaso_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_GEO'] !== null ? Autolinker.link(String(feature.properties['CD_GEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SETOR'] !== null ? Autolinker.link(String(feature.properties['CD_SETOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_QUADRA'] !== null ? Autolinker.link(String(feature.properties['CD_QUADRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_FACE'] !== null ? Autolinker.link(String(feature.properties['CD_FACE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TIPO_LO'] !== null ? Autolinker.link(String(feature.properties['NM_TIPO_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TITULO_'] !== null ? Autolinker.link(String(feature.properties['NM_TITULO_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_NOME_LO'] !== null ? Autolinker.link(String(feature.properties['NM_NOME_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_RES'] !== null ? Autolinker.link(String(feature.properties['TOT_RES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_GERAL'] !== null ? Autolinker.link(String(feature.properties['TOT_GERAL'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rotulo'] !== null ? Autolinker.link(String(feature.properties['rotulo'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_AltoParaso_8_0() {
+            return {
+                pane: 'pane_AltoParaso_8',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_AltoParaso_8');
+        map.getPane('pane_AltoParaso_8').style.zIndex = 408;
+        map.getPane('pane_AltoParaso_8').style['mix-blend-mode'] = 'normal';
+        var layer_AltoParaso_8 = new L.geoJson(json_AltoParaso_8, {
+            attribution: '',
+            pane: 'pane_AltoParaso_8',
+            onEachFeature: pop_AltoParaso_8,
+            style: style_AltoParaso_8_0,
+        });
+        bounds_group.addLayer(layer_AltoParaso_8);
+        map.addLayer(layer_AltoParaso_8);
+        function pop_MergusTurist_9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['id'] !== null ? Autolinker.link(String(feature.properties['id'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['nome'] !== null ? Autolinker.link(String(feature.properties['nome'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_MergusTurist_9_0() {
+            return {
+                pane: 'pane_MergusTurist_9',
+        rotationAngle: 0.0,
+        rotationOrigin: 'center center',
+        icon: L.icon({
+            iconUrl: 'markers/cachoeira.svg',
+            iconSize: [27.36, 27.36]
+        }),
+            }
+        }
+        map.createPane('pane_MergusTurist_9');
+        map.getPane('pane_MergusTurist_9').style.zIndex = 409;
+        map.getPane('pane_MergusTurist_9').style['mix-blend-mode'] = 'normal';
+        var layer_MergusTurist_9 = new L.geoJson(json_MergusTurist_9, {
+            attribution: '',
+            pane: 'pane_MergusTurist_9',
+            onEachFeature: pop_MergusTurist_9,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.marker(latlng, style_MergusTurist_9_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_MergusTurist_9);
+        map.addLayer(layer_MergusTurist_9);
+        function pop_IBGE_SJGO_10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_GEO'] !== null ? Autolinker.link(String(feature.properties['CD_GEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SETOR'] !== null ? Autolinker.link(String(feature.properties['CD_SETOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_QUADRA'] !== null ? Autolinker.link(String(feature.properties['CD_QUADRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_FACE'] !== null ? Autolinker.link(String(feature.properties['CD_FACE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TIPO_LO'] !== null ? Autolinker.link(String(feature.properties['NM_TIPO_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TITULO_'] !== null ? Autolinker.link(String(feature.properties['NM_TITULO_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_NOME_LO'] !== null ? Autolinker.link(String(feature.properties['NM_NOME_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_RES'] !== null ? Autolinker.link(String(feature.properties['TOT_RES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_GERAL'] !== null ? Autolinker.link(String(feature.properties['TOT_GERAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_IBGE_SJGO_10_0() {
+            return {
+                pane: 'pane_IBGE_SJGO_10',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_IBGE_SJGO_10');
+        map.getPane('pane_IBGE_SJGO_10').style.zIndex = 410;
+        map.getPane('pane_IBGE_SJGO_10').style['mix-blend-mode'] = 'normal';
+        var layer_IBGE_SJGO_10 = new L.geoJson(json_IBGE_SJGO_10, {
+            attribution: '',
+            pane: 'pane_IBGE_SJGO_10',
+            onEachFeature: pop_IBGE_SJGO_10,
+            style: style_IBGE_SJGO_10_0,
+        });
+        bounds_group.addLayer(layer_IBGE_SJGO_10);
+        map.addLayer(layer_IBGE_SJGO_10);
+        function pop_IBGE_ColinasGO_11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_GEO'] !== null ? Autolinker.link(String(feature.properties['CD_GEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SETOR'] !== null ? Autolinker.link(String(feature.properties['CD_SETOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_QUADRA'] !== null ? Autolinker.link(String(feature.properties['CD_QUADRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_FACE'] !== null ? Autolinker.link(String(feature.properties['CD_FACE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TIPO_LO'] !== null ? Autolinker.link(String(feature.properties['NM_TIPO_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TITULO_'] !== null ? Autolinker.link(String(feature.properties['NM_TITULO_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_NOME_LO'] !== null ? Autolinker.link(String(feature.properties['NM_NOME_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_RES'] !== null ? Autolinker.link(String(feature.properties['TOT_RES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_GERAL'] !== null ? Autolinker.link(String(feature.properties['TOT_GERAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_IBGE_ColinasGO_11_0() {
+            return {
+                pane: 'pane_IBGE_ColinasGO_11',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_IBGE_ColinasGO_11');
+        map.getPane('pane_IBGE_ColinasGO_11').style.zIndex = 411;
+        map.getPane('pane_IBGE_ColinasGO_11').style['mix-blend-mode'] = 'normal';
+        var layer_IBGE_ColinasGO_11 = new L.geoJson(json_IBGE_ColinasGO_11, {
+            attribution: '',
+            pane: 'pane_IBGE_ColinasGO_11',
+            onEachFeature: pop_IBGE_ColinasGO_11,
+            style: style_IBGE_ColinasGO_11_0,
+        });
+        bounds_group.addLayer(layer_IBGE_ColinasGO_11);
+        map.addLayer(layer_IBGE_ColinasGO_11);
+        function pop_IBGE_TerezinaGO_12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_GEO'] !== null ? Autolinker.link(String(feature.properties['CD_GEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SETOR'] !== null ? Autolinker.link(String(feature.properties['CD_SETOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_QUADRA'] !== null ? Autolinker.link(String(feature.properties['CD_QUADRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_FACE'] !== null ? Autolinker.link(String(feature.properties['CD_FACE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TIPO_LO'] !== null ? Autolinker.link(String(feature.properties['NM_TIPO_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TITULO_'] !== null ? Autolinker.link(String(feature.properties['NM_TITULO_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_NOME_LO'] !== null ? Autolinker.link(String(feature.properties['NM_NOME_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_RES'] !== null ? Autolinker.link(String(feature.properties['TOT_RES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_GERAL'] !== null ? Autolinker.link(String(feature.properties['TOT_GERAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_IBGE_TerezinaGO_12_0() {
+            return {
+                pane: 'pane_IBGE_TerezinaGO_12',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_IBGE_TerezinaGO_12');
+        map.getPane('pane_IBGE_TerezinaGO_12').style.zIndex = 412;
+        map.getPane('pane_IBGE_TerezinaGO_12').style['mix-blend-mode'] = 'normal';
+        var layer_IBGE_TerezinaGO_12 = new L.geoJson(json_IBGE_TerezinaGO_12, {
+            attribution: '',
+            pane: 'pane_IBGE_TerezinaGO_12',
+            onEachFeature: pop_IBGE_TerezinaGO_12,
+            style: style_IBGE_TerezinaGO_12_0,
+        });
+        bounds_group.addLayer(layer_IBGE_TerezinaGO_12);
+        map.addLayer(layer_IBGE_TerezinaGO_12);
+        function pop_IBGE_CavalcGO_13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? Autolinker.link(String(feature.properties['ID'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_GEO'] !== null ? Autolinker.link(String(feature.properties['CD_GEO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_SETOR'] !== null ? Autolinker.link(String(feature.properties['CD_SETOR'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_QUADRA'] !== null ? Autolinker.link(String(feature.properties['CD_QUADRA'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CD_FACE'] !== null ? Autolinker.link(String(feature.properties['CD_FACE'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TIPO_LO'] !== null ? Autolinker.link(String(feature.properties['NM_TIPO_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_TITULO_'] !== null ? Autolinker.link(String(feature.properties['NM_TITULO_'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NM_NOME_LO'] !== null ? Autolinker.link(String(feature.properties['NM_NOME_LO'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_RES'] !== null ? Autolinker.link(String(feature.properties['TOT_RES'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TOT_GERAL'] !== null ? Autolinker.link(String(feature.properties['TOT_GERAL'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_IBGE_CavalcGO_13_0() {
+            return {
+                pane: 'pane_IBGE_CavalcGO_13',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+            }
+        }
+        map.createPane('pane_IBGE_CavalcGO_13');
+        map.getPane('pane_IBGE_CavalcGO_13').style.zIndex = 413;
+        map.getPane('pane_IBGE_CavalcGO_13').style['mix-blend-mode'] = 'normal';
+        var layer_IBGE_CavalcGO_13 = new L.geoJson(json_IBGE_CavalcGO_13, {
+            attribution: '',
+            pane: 'pane_IBGE_CavalcGO_13',
+            onEachFeature: pop_IBGE_CavalcGO_13,
+            style: style_IBGE_CavalcGO_13_0,
+        });
+        bounds_group.addLayer(layer_IBGE_CavalcGO_13);
+        map.addLayer(layer_IBGE_CavalcGO_13);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/IBGE_CavalcGO_13.png" /> IBGE_CavalcGO': layer_IBGE_CavalcGO_13,'<img src="legend/IBGE_TerezinaGO_12.png" /> IBGE_TerezinaGO': layer_IBGE_TerezinaGO_12,'<img src="legend/IBGE_ColinasGO_11.png" /> IBGE_ColinasGO': layer_IBGE_ColinasGO_11,'<img src="legend/IBGE_SJGO_10.png" /> IBGE_SJGO': layer_IBGE_SJGO_10,'<img src="legend/MergusTurist_9.png" /> MergusTurist': layer_MergusTurist_9,'<img src="legend/AltoParaso_8.png" /> Alto Paraíso': layer_AltoParaso_8,'BC100_TRA_L_APAPA_corteEDIT<br /><table><tr><td style="text-align: center;"><img src="legend/BC100_TRA_L_APAPA_corteEDIT_7_Leitonatural0.png" /></td><td>Leito natural</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_TRA_L_APAPA_corteEDIT_7_Pavimentado1.png" /></td><td>Pavimentado</td></tr></table>': layer_BC100_TRA_L_APAPA_corteEDIT_7,'<img src="legend/REL_Elemento_Fisiografico_Natural_L_6.png" /> REL_Elemento_Fisiografico_Natural_L': layer_REL_Elemento_Fisiografico_Natural_L_6,'BC100_HID_DREN_L_APAPA_corteEDITselectOK<br /><table><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_CórregoAlmécegas0.png" /></td><td>Córrego Almécegas</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RibeirãoCachoeirinha1.png" /></td><td>Ribeirão Cachoeirinha</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RibeirãodasBrancas2.png" /></td><td>Ribeirão das Brancas</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RibeirãoMontesClaros3.png" /></td><td>Ribeirão Montes Claros</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RibeirãoPiçarrão4.png" /></td><td>Ribeirão Piçarrão</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RibeirãoSãoMiguel5.png" /></td><td>Ribeirão São Miguel</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RioClaro6.png" /></td><td>Rio Claro</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RiodePedra7.png" /></td><td>Rio de Pedra</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RiodosCouros8.png" /></td><td>Rio dos Couros</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RioPreto9.png" /></td><td>Rio Preto</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RioSãoFélix10.png" /></td><td>Rio São Félix</td></tr><tr><td style="text-align: center;"><img src="legend/BC100_HID_DREN_L_APAPA_corteEDITselectOK_5_RioTocantinzinho11.png" /></td><td>Rio Tocantinzinho</td></tr></table>': layer_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5,'<img src="legend/BC100_HID_DREN_L_APAPA_corteEDIT_4.png" /> BC100_HID_DREN_L_APAPA_corteEDIT': layer_BC100_HID_DREN_L_APAPA_corteEDIT_4,'<img src="legend/PTO_Pto_Ref_Geod_Topo_P_3.png" /> PTO_Pto_Ref_Geod_Topo_P': layer_PTO_Pto_Ref_Geod_Topo_P_3,'<img src="legend/PNCV_ampliado_SIRGAS2000_2.png" /> PNCV_ampliado_SIRGAS2000': layer_PNCV_ampliado_SIRGAS2000_2,'<img src="legend/Quilombolas_CorteAPAPA_1.png" /> Quilombolas_CorteAPAPA': layer_Quilombolas_CorteAPAPA_1,'<img src="legend/ReservasIndgenas_AvaCorteAPAPA_0.png" /> ReservasIndígenas_AvaCorteAPAPA': layer_ReservasIndgenas_AvaCorteAPAPA_0,}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_Quilombolas_CorteAPAPA_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NM_COMUN3'] !== null?String('<div style="color: #34ff30; font-size: 10pt; font-weight: bold; font-family: \'DejaVu Sans\', sans-serif;">' + layer.feature.properties['NM_COMUN3']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Quilombolas_CorteAPAPA_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_PTO_Pto_Ref_Geod_Topo_P_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOME'] !== null?String('<div style="color: #5d5c5c; font-size: 10pt; font-weight: bold; font-family: \'DejaVu Sans Condensed\', sans-serif;">' + layer.feature.properties['NOME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_PTO_Pto_Ref_Geod_Topo_P_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_BC100_HID_DREN_L_APAPA_corteEDIT_4.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOME'] !== null?String('<div style="color: #0e24f0; font-size: 7pt; font-family: \'DejaVu Sans Condensed\', sans-serif;">' + layer.feature.properties['NOME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_BC100_HID_DREN_L_APAPA_corteEDIT_4'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOME'] !== null?String('<div style="color: #2032fa; font-size: 8pt; font-weight: bold; font-family: \'DejaVu Sans\', sans-serif;">' + layer.feature.properties['NOME']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_BC100_HID_DREN_L_APAPA_corteEDITselectOK_5'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_REL_Elemento_Fisiografico_Natural_L_6.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NOMEABREV'] !== null?String('<div style="color: #777575; font-size: 11pt; font-family: \'DejaVu Sans Condensed\', sans-serif;">' + layer.feature.properties['NOMEABREV']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_REL_Elemento_Fisiografico_Natural_L_6'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_BC100_TRA_L_APAPA_corteEDIT_7.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['CODTRECHOR'] !== null?String('<div style="color: #000000; font-size: 8pt; font-weight: bold; font-family: \'DejaVu Sans Condensed\', sans-serif;">' + layer.feature.properties['CODTRECHOR']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_BC100_TRA_L_APAPA_corteEDIT_7'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var i = 0;
+        layer_MergusTurist_9.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['nome'] !== null?String('<div style="color: #000000; font-size: 10pt; font-family: \'DejaVu Sans Condensed\', sans-serif;">' + layer.feature.properties['nome']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_MergusTurist_9'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_REL_Elemento_Fisiografico_Natural_L_6,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'NOME'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        resetLabels([layer_QuilombolasCorteAPAPA_1,layer_PTOPtoRefGeodTopoP_3,layer_BC100HIDDRENLAPAPAcorteEDIT_4,layer_BC100HIDDRENLAPAPAcorteEDITselectOK_5,layer_RELElementoFisiograficoNaturalL_6,layer_BC100TRALAPAPAcorteEDIT_7,layer_MergusTurist_9]);
+        map.on("zoomend", function(){
+            resetLabels([layer_QuilombolasCorteAPAPA_1,layer_PTOPtoRefGeodTopoP_3,layer_BC100HIDDRENLAPAPAcorteEDIT_4,layer_BC100HIDDRENLAPAPAcorteEDITselectOK_5,layer_RELElementoFisiograficoNaturalL_6,layer_BC100TRALAPAPAcorteEDIT_7,layer_MergusTurist_9]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_QuilombolasCorteAPAPA_1,layer_PTOPtoRefGeodTopoP_3,layer_BC100HIDDRENLAPAPAcorteEDIT_4,layer_BC100HIDDRENLAPAPAcorteEDITselectOK_5,layer_RELElementoFisiograficoNaturalL_6,layer_BC100TRALAPAPAcorteEDIT_7,layer_MergusTurist_9]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_QuilombolasCorteAPAPA_1,layer_PTOPtoRefGeodTopoP_3,layer_BC100HIDDRENLAPAPAcorteEDIT_4,layer_BC100HIDDRENLAPAPAcorteEDITselectOK_5,layer_RELElementoFisiograficoNaturalL_6,layer_BC100TRALAPAPAcorteEDIT_7,layer_MergusTurist_9]);
+        });
+        </script>
+    </body>
+</html>
